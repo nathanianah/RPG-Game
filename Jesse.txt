@@ -1,2 +1,2 @@
 Testing
-hello.
+hello
