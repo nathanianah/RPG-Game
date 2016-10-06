@@ -9,11 +9,13 @@ blue = (0, 0, 255)
 yellow = (255, 255, 0)
 magenta = (255, 0, 255)
 green = (0, 255, 255)
-clock = pygame.time.Clock()
 fps = 60
-
 window_width = 800
 window_height = 600
+
+clock = pygame.time.Clock()
+pygame.font.init()
+font = pygame.font.SysFont(None, 25)
 
 def main():
 
@@ -73,17 +75,22 @@ def main():
 
         x = max(0, min(x, window_width - width))
         y = max(0, min(y, window_height - 50 - height))
-        if y >= (window_height - 50 - height):
-            jumps = 2
 
         gameDisplay.fill(white)
         gameDisplay.fill(black, [0, 550, 800, 25])
         gameDisplay.fill(blue, [x, y, width, height])
+        if y >= (window_height - 50 - height):
+            jumps = 2
+            messageToScreen(gameDisplay, "Jumps reset", red)
         pygame.display.update()
 
         clock.tick(fps)
 
     pygame.quit()
     quit()
+
+def messageToScreen(gameDisplay, msg, color):
+    message = font.render(msg, True, color)
+    gameDisplay.blit(message, [window_width / 2, window_height / 2])
 
 main()
