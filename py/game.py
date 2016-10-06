@@ -73,7 +73,7 @@ def main():
 
         x = max(0, min(x, window_width - width))
         y = max(0, min(y, window_height - 50 - height))
-        if y <= (window_height - 50 - height):
+        if y >= (window_height - 50 - height):
             jumps = 2
 
         gameDisplay.fill(white)
