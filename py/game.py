@@ -35,7 +35,7 @@ def main():
     width = 10
     height = 10
     speed = 250
-    jumps = 1
+    jumps = 2
     jumping = False
 
     #Game Loop
