@@ -1,17 +1,7 @@
 import pygame
+from character import *
+from h import *
 
-#define colors
-black = (0, 0, 0)
-white = (255, 255, 255)
-red = (255, 0, 0)
-green = (0, 255, 0)
-blue = (0, 0, 255)
-yellow = (255, 255, 0)
-magenta = (255, 0, 255)
-green = (0, 255, 255)
-fps = 60
-window_width = 800
-window_height = 600
 
 clock = pygame.time.Clock()
 pygame.font.init()
@@ -27,21 +17,24 @@ def main():
     #Gameloop variables
     gameContinue = True
     keys = dict()
+
+    #Setting sprite lists
+    char = Character()
+    bullets = []
+
+    #Making sprite groups
+    bulletList = pygame.sprite.Group()
+    spriteList = pygame.sprite.Group()
+    spriteList.add(char)
     
-    x = 300
-    y = 300
-    deltaX = 0
-    deltaY = 0
-    width = 10
-    height = 10
-    speed = 250
-    jumps = 2
+    (deltaX, deltaY) = (0, 0)
+    jumps = max_jumps
     jumping = False
 
     #Game Loop
     while gameContinue:
         for event in pygame.event.get():
-            #print(event)
+            #Setting Key Map
             if event.type == pygame.QUIT:
                 gameContinue = False
             elif event.type == pygame.KEYDOWN:
@@ -49,6 +42,7 @@ def main():
             elif event.type == pygame.KEYUP:
                 keys[event.key] = False
 
+        #Interpreting Keypresses
         if pygame.K_UP in keys and keys[pygame.K_UP]:
             if jumps > 0 and not jumping:
                 jumping = True
@@ -67,21 +61,32 @@ def main():
             #x += (speed) / fps
         else:
             deltaX = 0
-        
+        if pygame.K_SPACE in keys and keys[pygame.K_SPACE]:
+            (rectX, rectY) = char.rect.center
+            bullet = Bullet(rectX, rectY, 1)
+            bullets += [bullet]
+            bulletList.add(bullet)
+
+        #Update character movement
         deltaY += 5
 
-        x += deltaX
-        y += deltaY
+        char.rect.x += deltaX
+        char.rect.y += deltaY
 
-        x = max(0, min(x, window_width - width))
-        y = max(0, min(y, window_height - 50 - height))
+        char.rect.x = max(0, min(char.rect.x, window_width - char.rect.width))
+        char.rect.y = max(0, min(char.rect.y, window_height - 50 - char.rect.height))
 
+        #Update bullet movement
+        for bullet in bullets:
+            bullet.rect.x += 5 if bullet.direction > 0 else -5
+
+        #Render
         gameDisplay.fill(white)
         gameDisplay.fill(black, [0, 550, 800, 25])
-        gameDisplay.fill(blue, [x, y, width, height])
-        if y >= (window_height - 50 - height):
-            jumps = 2
+        if char.rect.y >= (window_height - 50 - char.rect.height):
+            jumps = max_jumps
             messageToScreen(gameDisplay, "Jumps reset", red)
+        spriteList.draw(gameDisplay)
         pygame.display.update()
 
         clock.tick(fps)
